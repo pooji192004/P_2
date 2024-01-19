@@ -1,0 +1,55 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class LinkShortener {
+    private Map<String, String> shortToOriginalMap;
+    private Map<String, String> originalToShortMap;
+
+    public LinkShortener() {
+        this.shortToOriginalMap = new HashMap<>();
+        this.originalToShortMap = new HashMap<>();
+    }
+
+    public String shortenLink(String originalUrl) {
+        if (originalToShortMap.containsKey(originalUrl)) {
+            return originalToShortMap.get(originalUrl);
+        }
+
+        String shortCode = generateShortCode();
+        shortToOriginalMap.put(shortCode, originalUrl);
+        originalToShortMap.put(originalUrl, shortCode);
+
+        return shortCode;
+    }
+
+    public String expandLink(String shortCode) {
+        return shortToOriginalMap.getOrDefault(shortCode, "Link not found");
+    }
+
+    private String generateShortCode() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder shortCode = new StringBuilder();
+
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(characters.length());
+            shortCode.append(characters.charAt(index));
+        }
+
+        return shortCode.toString();
+    }
+
+    public static void main(String[] args) {
+        LinkShortener linkShortener = new LinkShortener();
+
+        // Shorten a link
+        String originalUrl = "https://www.example.com";
+        String shortCode = linkShortener.shortenLink(originalUrl);
+        System.out.println("Shortened link: " + shortCode);
+
+        // Expand a link
+        String expandedUrl = linkShortener.expandLink(shortCode);
+        System.out.println("Expanded link: " + expandedUrl);
+    }
+}
